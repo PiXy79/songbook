@@ -3,14 +3,17 @@
 'use strict';
 
  // Configurations
-var cmd;
+var songFolder = './songs';
+var outputFileName = 'output';
 var newLabels = [];
 
 const program = require('commander'),
 	Q = require('q'),
+	process = require('process'),
 	progress = require('cli-progress'),
 	 _ = require('lodash'),
 	fs = require('fs-extra'),
+	pdf = require('html-pdf'),
 	ChordPro = require('./chordpro');
 	/*jshint unused:false*/
 
@@ -22,15 +25,14 @@ const program = require('commander'),
 // Command line initialization
 //-----------------------------------------------------------------------------
 program
-.version('1.0.0')
-  .usage('[options] <output_file>')
-  .option('-v, --verbose', 'Verbose mode')
+.version('0.0.1')
+  .usage('[options] <songs_folder> <output_file>')
+  .option('-c, --chord', 'Export song chords')
 
-  .action(function(command, file) {
-    cmd = command;
-    if (typeof file === 'string') {
-			var exportFilename = file.replace(/\.[^/.]+$/, '');
-			console.dir(exportFilename);
+  .action(function(sf, outputFile) {
+		songFolder = sf;
+    if (typeof outputFile === 'string') {
+			outputFileName = outputFile.replace(/\.[^/.]+$/, '');
     }
   });
 
@@ -49,27 +51,71 @@ if (typeof cmd === 'undefined' || (cmd !== 'export' && cmd !== 'import' && cmd !
 }
 */
 
-// Check language folder existence
-/*
-if (!fs.existsSync('./languages')) {
-  console.error('\nError: Folder \'./languages\' not found in current directory.'.bold.red);
-  console.log('');
-  console.log('Please, run l10n command from a directory that contains \'languages\' folder and structure.');
+// Check songs folder existence
+if (!fs.existsSync(songFolder)) {
+  console.error('\nError: Folder \'' + songFolder + '\' not found in current directory.');
+	console.log('Please, run songbook from a directory that contains \'songs\' folder.');
+	console.log('');
   process.exit(1);
 }
-*/
 
-// Instantiate chordPro
-var chordpro = new ChordPro();
 
-var	chordProOptions = {
-	showChords: true,
-	// class:
-	// chordFormatter:
-	transpose: 0
-};
+// Read HTML template
+var htmlTemplate = '';
+fs.readFile('./template/template.html', function (err, data) {
+  if (err) {
+		process.exit(1);
+		throw err;
+	}
 
-// add css to main div that contains pages : column-count: 2;
+	htmlTemplate = data.toString();
 
-console.log(chordpro.toHtml('{title: Pippo}\n [DO]Ciao sono un [RE]testo di prova\n[RE]vediamo come [LA]va', chordProOptions));
+	// Instantiate chordPro
+	var chordpro = new ChordPro();
 
+	var	chordProOptions = {
+		showChords: _.isNil(program.chord) ? false : program.chord,
+		// class:
+		// chordFormatter:
+		transpose: 0
+	};
+
+	var songsHtml = '';
+	// Read songs
+	fs.readdir(songFolder, function(err, files) {
+    files.forEach(function(file) {
+			var song = fs.readFileSync(songFolder + '/' + file).toString();
+			songsHtml = songsHtml + chordpro.toHtml(song, chordProOptions) + '<br><br>';
+		});
+		htmlTemplate = htmlTemplate.replace('[songs]', songsHtml);
+
+		// Write html file
+		fs.writeFile(outputFileName + '.html', htmlTemplate, function (err) {
+			if (err) { return console.log(err); }
+		});
+
+		// Write PDF file
+		var options = {
+			format: 'A4',
+			renderDelay: 1000,
+			border: {
+				top: '1cm',
+				right: '1cm',
+				bottom: '0.5cm',
+				left: '1cm'
+			},
+			footer: {
+				height: '1cm',
+				contents: {
+					default: '<div style="text-align: center; font-family: "Arial"; color: #444;"><small>{{page}}</small></div>'
+				}
+			},
+		};
+
+		pdf.create(htmlTemplate, options).toFile(outputFileName + '.pdf', function(err, res) {
+			if (err) { return console.log(err); }
+		});
+
+	});
+
+});
