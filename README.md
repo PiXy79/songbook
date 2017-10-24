@@ -18,7 +18,7 @@ Available commands are:
 
 ### Options
 
-	-c, --chord          	 Show song chords
+	-c, --chord            Show song chords
 	-V, --version          Print version number
 	-h, --help             Print usage information
 
