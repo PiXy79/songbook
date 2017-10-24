@@ -89,7 +89,7 @@ fs.readFile('./template/template.html', function (err, data) {
 		});
 		htmlTemplate = htmlTemplate.replace('[songs]', songsHtml);
 
-		// Write html file
+		// Write HTML file
 		fs.writeFile(outputFileName + '.html', htmlTemplate, function (err) {
 			if (err) { return console.log(err); }
 		});
@@ -107,15 +107,13 @@ fs.readFile('./template/template.html', function (err, data) {
 			footer: {
 				height: '1cm',
 				contents: {
-					default: '<div style="text-align: center; font-family: "Arial"; color: #444;"><small>{{page}}</small></div>'
+					default: '<div style="text-align: center; font-family: "PT Sans", sans-serif; color: #444;"><small>{{page}}</small></div>'
 				}
 			},
 		};
-
 		pdf.create(htmlTemplate, options).toFile(outputFileName + '.pdf', function(err, res) {
 			if (err) { return console.log(err); }
 		});
-
 	});
 
 });
