@@ -1,6 +1,12 @@
 # Songbook - song book generator
 
-`Songbook` is a command-line tool used to generate automatically a PDF song book starting from one or mode '.chorpro' files.
+`Songbook` is a command-line tool used to generate automatically a song book.
+
+It currently support the following output formats: 
+
+- HTML
+- TXT
+- PDF 
 
 ## Installation 
 
@@ -12,14 +18,15 @@ After the installation, `songbook` command can be execute everywhere in your ter
 
 ## Usage
 
-	songbook <songs_folder> <output_file>
+	songbook <songs_folder> <output_filename>
 
 Available commands are: 
 
 ### Options
 
 	-c, --chord          	 Show song chords
-	-V, --version          Print version number
+	-n, --song-number      Add song number
+	-V, --version          Print version
 	-h, --help             Print usage information
 
 

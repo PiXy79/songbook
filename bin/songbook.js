@@ -14,6 +14,7 @@ const program = require('commander'),
 	 _ = require('lodash'),
 	fs = require('fs-extra'),
 	pdf = require('html-pdf'),
+	htmlToText = require('html-to-text'),
 	ChordPro = require('./chordpro');
 	/*jshint unused:false*/
 
@@ -26,8 +27,9 @@ const program = require('commander'),
 //-----------------------------------------------------------------------------
 program
 .version('0.0.1')
-  .usage('[options] <songs_folder> <output_file>')
-  .option('-c, --chord', 'Export song chords')
+  .usage('[options] <songs_folder> <output_filename>')
+	.option('-c, --chord', 'Export song chords')
+	.option('-n, --song-number', 'Export song number')
 
   .action(function(sf, outputFile) {
 		songFolder = sf;
@@ -77,20 +79,33 @@ fs.readFile('./template/template.html', function (err, data) {
 		showChords: _.isNil(program.chord) ? false : program.chord,
 		// class:
 		// chordFormatter:
-		transpose: 0
+		transpose: 0,
+		songNumber: null
 	};
 
 	var songsHtml = '';
 	// Read songs
 	fs.readdir(songFolder, function(err, files) {
-    files.forEach(function(file) {
+    files.forEach(function(file, index) {
 			var song = fs.readFileSync(songFolder + '/' + file).toString();
-			songsHtml = songsHtml + chordpro.toHtml(song, chordProOptions) + '<br><br>';
+			var htmlSong = chordpro.toHtml(song, chordProOptions);
+			if (!_.isNil(program.songNumber) && program.songNumber) {
+				chordProOptions.songNumber = index + 1;
+			}
+			songsHtml = songsHtml + chordpro.toHtml(song, chordProOptions) + '<br>';
 		});
 		htmlTemplate = htmlTemplate.replace('[songs]', songsHtml);
 
 		// Write HTML file
 		fs.writeFile(outputFileName + '.html', htmlTemplate, function (err) {
+			if (err) { return console.log(err); }
+		});
+
+		// Write TXT file
+		var text = htmlToText.fromString(htmlTemplate, {
+			wordwrap: 180
+		});
+		fs.writeFile(outputFileName + '.txt', text, function (err) {
 			if (err) { return console.log(err); }
 		});
 

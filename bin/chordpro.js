@@ -210,7 +210,11 @@ ChordPro.prototype.format = function(source, newLine, options) {
 			}
 			text += self.formatLyricsEntry(entry, newLine, options);
 		} else if(entry.type === 'title') {
-			text += '<span style="font-weight: bold; font-size: 130%; line-height: 130%;">' + entry.text.trim() + '</span>';
+			text += '<span style="font-weight: bold; font-size: 130%; line-height: 130%;">';
+			if (options.songNumber !== null) {
+				text += '<span class="songNumber">' + options.songNumber + '</span> ';
+			}
+			text += entry.text.trim() + '</span>';
 		} else if(entry.type === 'subtitle') {
 			text += '<br><span style="font-weight: bold;">' + entry.text.trim() + '</span>';
 		}
