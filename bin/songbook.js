@@ -13,8 +13,8 @@ const program = require('commander'),
 	progress = require('cli-progress'),
 	 _ = require('lodash'),
 	fs = require('fs-extra'),
-	pdf = require('html-pdf'),
 	htmlToText = require('html-to-text'),
+	HTMLToPDF = require('html5-to-pdf'),
 	ChordPro = require('./chordpro');
 	/*jshint unused:false*/
 
@@ -64,7 +64,7 @@ if (!fs.existsSync(songFolder)) {
 
 // Read HTML template
 var htmlTemplate = '';
-fs.readFile('./template/template.html', function (err, data) {
+fs.readFile('./templates/main.html', function (err, data) {
   if (err) {
 		process.exit(1);
 		throw err;
@@ -92,7 +92,7 @@ fs.readFile('./template/template.html', function (err, data) {
 			if (!_.isNil(program.songNumber) && program.songNumber) {
 				chordProOptions.songNumber = index + 1;
 			}
-			songsHtml = songsHtml + chordpro.toHtml(song, chordProOptions) + '<br>';
+			songsHtml = songsHtml + chordpro.toHtml(song, chordProOptions);
 		});
 		htmlTemplate = htmlTemplate.replace('[songs]', songsHtml);
 
@@ -110,24 +110,13 @@ fs.readFile('./template/template.html', function (err, data) {
 		});
 
 		// Write PDF file
-		var options = {
-			format: 'A4',
-			renderDelay: 1000,
-			border: {
-				top: '1cm',
-				right: '1cm',
-				bottom: '0.5cm',
-				left: '1cm'
-			},
-			footer: {
-				height: '1cm',
-				contents: {
-					default: '<div style="text-align: center; font-family: "PT Sans", sans-serif; color: #444;"><small>{{page}}</small></div>'
-				}
-			},
-		};
-		pdf.create(htmlTemplate, options).toFile(outputFileName + '.pdf', function(err, res) {
-			if (err) { return console.log(err); }
+		const htmlToPDF = new HTMLToPDF({
+			inputBody: htmlTemplate,
+			outputPath: './' + outputFileName + '.pdf',
+			templatePath: './templates/pdf'
+		});
+		htmlToPDF.build(function(error) {
+			if (error) { return console.log(error); }
 		});
 	});
 
