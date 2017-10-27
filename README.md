@@ -20,17 +20,13 @@ After the installation, `songbook` command can be execute everywhere in your ter
 
 	songbook <songs_folder> <output_filename>
 
-Available commands are: 
-
 ### Options
 
 	-c, --chord          	 Show song chords
+	-C, --column [count]   Layout column count (default 2)
 	-n, --song-number      Add song number
 	-V, --version          Print version
 	-h, --help             Print usage information
-
-
-## Release notes
 
 # Contributors
 
