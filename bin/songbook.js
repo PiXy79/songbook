@@ -7,7 +7,6 @@ var songFolder = './songs';
 var outputFileName = 'output';
 var newLabels = [];
 
-
 const supportedInputFormat = ['txt', 'chopro', 'cho', 'crd', 'pro', 'cpm'];
 
 const program = require('commander'),
@@ -43,19 +42,6 @@ program
 
 program.parse(process.argv);
 
-// Check command
-/*
-if (typeof cmd === 'undefined' || (cmd !== 'export' && cmd !== 'import' && cmd !== 'inspect')) {
-  console.error('\nError: please specify or type the right command.'.bold.red);
-  console.log('');
-  console.log('  Available commands are:');
-  console.log('   export   :  Export new labels from language JSON files creating csv/xlsx localization file/files');
-  console.log('   import   :  Import csx/xlsx files to update (merge) new labels in language JSON files.');
-  console.log('   inspect  :  Inspect language files checking for missing, untranslated and duplicate values.');
-  process.exit(1);
-}
-*/
-
 // Check songs folder existence
 if (!fs.existsSync(songFolder)) {
   console.error('\nError: Folder \'' + songFolder + '\' not found in current directory.');
@@ -63,7 +49,6 @@ if (!fs.existsSync(songFolder)) {
 	console.log('');
   process.exit(1);
 }
-
 
 // Read HTML template
 var htmlTemplate = '';

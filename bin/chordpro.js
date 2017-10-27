@@ -193,7 +193,7 @@ ChordPro.prototype.formatLyricsEntry = function(entry, lineEnd, options) {
 			text += lineEnd;
 		}
 
-		text += entry.chorus ? '     ' + entry.lyrics.trim() : entry.lyrics.trim();
+		text += entry.chorus ? '<span class="chorus">' + entry.lyrics.trim() + '</span>' : entry.lyrics.trim();
 	}
 
 	return text;
