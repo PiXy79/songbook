@@ -16,7 +16,6 @@
   "author": "Angelo Moriconi",
   "license": "MIT",
   "dependencies": {
-    "cli-progress": "^1.4.1",
     "commander": "^2.11.0",
     "fs-extra": "^3.0.1",
     "html-to-text": "^3.3.0",

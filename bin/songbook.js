@@ -13,7 +13,6 @@ const supportedInputFormat = ['txt', 'chopro', 'cho', 'crd', 'pro', 'cpm'];
 const program = require('commander'),
 	Q = require('q'),
 	process = require('process'),
-	progress = require('cli-progress'),
 	 _ = require('lodash'),
 	fs = require('fs-extra'),
 	htmlToText = require('html-to-text'),
@@ -33,6 +32,7 @@ program
   .usage('[options] <songs_folder> <output_filename>')
 	.option('-c, --chord', 'Export song chords')
 	.option('-n, --song-number', 'Export song number')
+	.option('-C, --column [count]', 'Layout column count [2]', 2)
 
   .action(function(sf, outputFile) {
 		songFolder = sf;
@@ -74,6 +74,9 @@ fs.readFile('./templates/main.html', function (err, data) {
 	}
 
 	htmlTemplate = data.toString();
+
+	// Set column count
+	htmlTemplate = htmlTemplate.replace(/\[columnCount\]/g, program.column);
 
 	// Instantiate chordPro
 	var chordpro = new ChordPro();
