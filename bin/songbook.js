@@ -7,6 +7,9 @@ var songFolder = './songs';
 var outputFileName = 'output';
 var newLabels = [];
 
+
+const supportedInputFormat = ['txt', 'chopro', 'cho', 'crd', 'pro', 'cpm'];
+
 const program = require('commander'),
 	Q = require('q'),
 	process = require('process'),
@@ -84,9 +87,15 @@ fs.readFile('./templates/main.html', function (err, data) {
 	};
 
 	var songsHtml = '';
-	// Read songs
+
+	// Read songs (chordpro files inside songFolder)
 	fs.readdir(songFolder, function(err, files) {
-    files.forEach(function(file, index) {
+		files
+		.filter(function(file) {
+			var fileExtensionPatter = /\.([0-9a-z]+)(?=[?#])|(\.)(?:[\w]+)$/gmi;
+			return supportedInputFormat.indexOf(file.match(fileExtensionPatter)[0].substring(1)) !== -1;
+		})
+		.forEach(function(file, index) {
 			var song = fs.readFileSync(songFolder + '/' + file).toString();
 			var htmlSong = chordpro.toHtml(song, chordProOptions);
 			if (!_.isNil(program.songNumber) && program.songNumber) {
