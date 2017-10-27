@@ -205,7 +205,8 @@ ChordPro.prototype.format = function(source, newLine, options) {
 	var self = this;
 	parsed.forEach(function (entry) {
 		if (entry.type === 'lyrics') {
-			if (text.length > 0) {
+			// Pay attention to not put double consecutive newLines
+			if (text.length > 0 && !text.endsWith(newLine + newLine)) {
 				text += newLine;
 			}
 			text += self.formatLyricsEntry(entry, newLine, options);
