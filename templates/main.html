@@ -3,9 +3,12 @@
 	<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 	<style type="text/css">
 
-		html, body {
+		div.content {
 			font-family: "PT Sans", sans-serif;
 			font-size: 13px;
+			-webkit-column-count: [columnCount];
+			-moz-column-count: [columnCount];
+			column-count: [columnCount];
 		}
 
 		pre {
@@ -24,8 +27,8 @@
 		span.title {
 			font-weight: bold;
 			text-transform: uppercase;
-			font-size: 120%;
-			line-height: 120%;
+			font-size: 130%;
+			line-height: 130%;
 		}
 		span.subtitle {
 			font-weight: bold;
@@ -42,7 +45,7 @@
 </head>
 
 <body>
-	<div style="-webkit-column-count: [columnCount]; -moz-column-count: [columnCount]; column-count: [columnCount];">
+	<div class="content">
 		[songs]
 	</div>
 </body>
