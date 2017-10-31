@@ -22,11 +22,12 @@ After the installation, `songbook` command can be execute everywhere in your ter
 
 ### Options
 
-	-c, --chord          	 Show song chords
-	-C, --column [count]   Layout column count (default 2)
-	-n, --song-number      Add song number
-	-V, --version          Print version
-	-h, --help             Print usage information
+	-c, --chord          	 							Show song chords
+	-C, --column [count]   							Layout column count (default 2)
+	-n, --song-number      							Add song number
+	-V, --version          							Print version
+	-r, --replace-chorus [chorusLabel]	Replace chorus with [chorusLabel]
+	-h, --help             							Print usage information
 
 # Contributors
 

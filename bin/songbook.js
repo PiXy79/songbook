@@ -31,6 +31,7 @@ program
   .usage('[options] <songs_folder> <output_filename>')
 	.option('-c, --chord', 'Export song chords')
 	.option('-n, --song-number', 'Export song number')
+	.option('-r, --replace-chorus [chorusLabel]', 'Replace chorus with [chorusLabel]')
 	.option('-C, --column [count]', 'Layout column count [2]', 2)
 
   .action(function(sf, outputFile) {
@@ -41,6 +42,11 @@ program
   });
 
 program.parse(process.argv);
+
+// Adjust replaceChorus
+if (typeof program.replaceChorus === 'boolean') {
+	program.replaceChorus = 'CHORUS';
+}
 
 // Check songs folder existence
 if (!fs.existsSync(songFolder)) {
@@ -70,6 +76,8 @@ fs.readFile('./templates/main.html', function (err, data) {
 		showChords: _.isNil(program.chord) ? false : program.chord,
 		// class:
 		// chordFormatter:
+		replaceChorus: _.isNil(program.replaceChorus) ? false : true,
+		replaceChorusLabel: _.isNil(program.replaceChorus) ? '' : program.replaceChorus,
 		transpose: 0,
 		songNumber: null
 	};

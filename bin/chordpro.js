@@ -24,7 +24,8 @@ ChordPro.prototype.parse = function(source, showChords) {
 	var directiveRegex = /^{.*}/;
 	var commentRegex = /^#/;
 
-	var chorus = false;
+	var chorus = 0;
+	var chorusCount = 0;
 
 	source.split('\n').forEach(function (line) {
 
@@ -41,9 +42,10 @@ ChordPro.prototype.parse = function(source, showChords) {
 			var content = match[1];
 
 			if(content.indexOf('soc') === 0) {
-				chorus = true;
+				chorusCount++;
+				chorus = chorusCount;
 			} else if(content.indexOf('eoc') === 0) {
-				chorus = false;
+				chorus = 0;
 			}
 			else if(content.indexOf('title:') === 0 || content.indexOf('t:') === 0) {
 				lineInfos.push({
@@ -106,9 +108,9 @@ ChordPro.prototype.parse = function(source, showChords) {
 
 			// trim end of lyrics text
 			lineInfo.lyrics = lineInfo.lyrics.replace(/\s+$/, '');
-            if(lineInfo.lyrics.length > 0 || lineInfo.chords.length > 0) {
+      if(lineInfo.lyrics.length > 0 || lineInfo.chords.length > 0) {
 				lineInfos.push(lineInfo);
-            }
+      }
 		}
 		else {
           lineInfos.push({
@@ -199,10 +201,63 @@ ChordPro.prototype.formatLyricsEntry = function(entry, lineEnd, options) {
 	return text;
 };
 
+
+function equalCustomizer(objValue, othValue) {
+	if (objValue.length !== othValue.length) { return false; }
+	var isEqual = true;
+	for (var i = 0;i < objValue.length; i++) {
+		var check = objValue[i].type === othValue[i].type && objValue[i].lyrics === othValue[i].lyrics &&
+			_.isEqual(objValue[i].chords, othValue[i].chords);
+		if(!check) {
+			isEqual = false;
+			break;
+		}
+	}
+	return isEqual;
+}
+
+function replaceChorus(entries, chorusLabel) {
+
+	var chorus = _.groupBy(entries, 'chorus');
+	delete chorus[0];
+	delete chorus[undefined];
+
+	var firstChorus = chorus[1];
+	var chorusToReplace = [];
+	for(var i = 2; i <= Object.keys(chorus).length; i++) {
+		var otherChorus = chorus[i];
+		if (_.isEqualWith(firstChorus, otherChorus, equalCustomizer)) {
+			chorusToReplace.push(i);
+		}
+	}
+
+	var chorusLabelLine = {
+		type: 'lyrics',
+		lyrics: chorusLabel,
+		chords: [],
+		chorus: 1
+	};
+
+	chorusToReplace.forEach(function(chorusIndexToReplace) {
+		var index = _.findIndex(entries, function(entry) {
+			return entry.chorus && entry.chorus === chorusIndexToReplace;
+		});
+		entries.splice(index, 0, chorusLabelLine);
+		_.remove(entries, function(entry) {
+			return entry.chorus && entry.chorus === chorusIndexToReplace;
+		});
+	});
+}
+
 ChordPro.prototype.format = function(source, newLine, options) {
 	var parsed = this.parse(source, options.showChords);
 	var text = '';
 	var self = this;
+
+	if (options.replaceChorus) {
+		replaceChorus(parsed, options.replaceChorusLabel);
+	}
+
 	parsed.forEach(function (entry) {
 		if (entry.type === 'lyrics') {
 			// Pay attention to not put double consecutive newLines
