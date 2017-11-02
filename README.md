@@ -1,12 +1,19 @@
 # Songbook - song book generator
 
-`Songbook` is a command-line tool used to generate automatically a song book.
+`Songbook` is a command-line tool used to generate automatically a song book. Songbook accept songs in the [chorpro file format](https://www.chordpro.org/chordpro/ChordPro-File-Format-Specification.html) with the following extension: 
+
+- txt, chopro, cho, crd, pro, cpm
+
 
 It currently support the following output formats: 
 
 - HTML
 - TXT
 - PDF 
+
+---
+
+![alt text](https://user-images.githubusercontent.com/25789363/32336538-d715615a-bfef-11e7-86d1-792bfc23ba30.png)
 
 ## Installation 
 
