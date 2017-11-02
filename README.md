@@ -27,8 +27,5 @@ After the installation, `songbook` command can be execute everywhere in your ter
 	-n, --song-number      							Add song number
 	-V, --version          							Print version
 	-r, --replace-chorus [chorusLabel]	Replace chorus with [chorusLabel]
+	-o, --one-song-per-column						Print one song per column
 	-h, --help             							Print usage information
-
-# Contributors
-
-- Angelo Moriconi
