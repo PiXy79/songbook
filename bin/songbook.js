@@ -32,6 +32,7 @@ program
 	.option('-c, --chord', 'Export song chords')
 	.option('-n, --song-number', 'Export song number')
 	.option('-r, --replace-chorus [chorusLabel]', 'Replace chorus with [chorusLabel]')
+	.option('-o, --one-song-per-column', 'Print one song per column')
 	.option('-C, --column [count]', 'Layout column count [2]', 2)
 
   .action(function(sf, outputFile) {
@@ -84,6 +85,8 @@ fs.readFile('./templates/main.html', function (err, data) {
 
 	var songsHtml = '';
 
+	var oneSongPerColumn = _.isNil(program.oneSongPerColumn) ? false : program.oneSongPerColumn;
+
 	// Read songs (chordpro files inside songFolder)
 	fs.readdir(songFolder, function(err, files) {
 		files
@@ -98,6 +101,9 @@ fs.readFile('./templates/main.html', function (err, data) {
 				chordProOptions.songNumber = index + 1;
 			}
 			songsHtml = songsHtml + chordpro.toHtml(song, chordProOptions);
+			if (oneSongPerColumn) {
+				songsHtml += '<div class="page-break"></div>';
+			}
 		});
 		htmlTemplate = htmlTemplate.replace('[songs]', songsHtml);
 
