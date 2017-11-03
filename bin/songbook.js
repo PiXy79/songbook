@@ -10,9 +10,8 @@ var newLabels = [];
 const supportedInputFormat = ['txt', 'chopro', 'cho', 'crd', 'pro', 'cpm'];
 
 const program = require('commander'),
-	Q = require('q'),
 	process = require('process'),
-	 _ = require('lodash'),
+	_ = require('lodash'),
 	fs = require('fs-extra'),
 	htmlToText = require('html-to-text'),
 	HTMLToPDF = require('html5-to-pdf'),
