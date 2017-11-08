@@ -33,7 +33,7 @@ program
 	.option('-r, --replace-chorus [chorusLabel]', 'Replace chorus with [chorusLabel]')
 	.option('-o, --one-song-per-column', 'Print one song per column')
 	.option('-C, --column [count]', 'Layout column count [2]', 2)
-
+	.option('-f, --font-size [size]', 'CSS font-size [14px]', '14px')
   .action(function(sf, outputFile) {
 		songFolder = sf;
     if (typeof outputFile === 'string') {
@@ -66,8 +66,15 @@ fs.readFile('./templates/main.html', function (err, data) {
 
 	htmlTemplate = data.toString();
 
-	// Set column count
-	htmlTemplate = htmlTemplate.replace(/\[columnCount\]/g, program.column);
+	// Adjust CSS style-rule 'div.content' adding font-size and column count
+	htmlTemplate = htmlTemplate.replace(/(?:^|})*div.content\s*\{([^}]*)}/g,
+		'div.content {\n' +
+			'\t\t\tfont-size: ' + program.fontSize + ';\n' +
+			'\t\t\tfont-family: "PT Sans", sans-serif;\n' +
+			'\t\t\t-webkit-column-count: ' + program.column + ';\n' +
+			'\t\t\t-moz-column-count: ' + program.column + ';\n' +
+			'\t\t\tcolumn-count: ' + program.column + ';\n' +
+		'\t\t}');
 
 	// Instantiate chordPro
 	var chordpro = new ChordPro();

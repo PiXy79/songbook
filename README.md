@@ -31,8 +31,9 @@ After the installation, `songbook` command can be execute everywhere in your ter
 
 	-c, --chord          	 							Show song chords
 	-C, --column [count]   							Layout column count (default 2)
+	-f, --font-size [size], 						CSS font-size (default 14px)
 	-n, --song-number      							Add song number
 	-V, --version          							Print version
-	-r, --replace-chorus [chorusLabel]	Replace chorus with [chorusLabel]
+	-r, --replace-chorus [chorusLabel]	Replace chorus with a label (default 'CHORUS')
 	-o, --one-song-per-column						Print one song per column
 	-h, --help             							Print usage information
