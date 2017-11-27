@@ -261,12 +261,6 @@ textarea {
 			page-break-after: always;
 		}
 
-    pre,
-    blockquote {
-        border: 1px solid #999;
-        page-break-inside: avoid;
-    }
-
     thead {
         display: table-header-group; /* h5bp.com/t */
     }
@@ -279,10 +273,6 @@ textarea {
     img {
         max-width: 100%;
     }
-
-    @page {
-				margin: 1cm;
-	  }
 
     p,
     h2,

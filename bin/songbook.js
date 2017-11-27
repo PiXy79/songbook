@@ -31,8 +31,10 @@ program
 	.option('-c, --chord', 'Export song chords')
 	.option('-n, --song-number', 'Export song number')
 	.option('-r, --replace-chorus [chorusLabel]', 'Replace chorus with [chorusLabel]')
+	.option('-b, --avoid-page-break', 'Avoid page break inside song')
 	.option('-o, --one-song-per-column', 'Print one song per column')
 	.option('-C, --column [count]', 'Layout column count [2]', 2)
+	.option('-m, --margin [size]', 'Page margin [1cm]', '1cm')
 	.option('-f, --font-size [size]', 'CSS font-size [14px]', '14px')
   .action(function(sf, outputFile) {
 		songFolder = sf;
@@ -66,15 +68,32 @@ fs.readFile('./templates/main.html', function (err, data) {
 
 	htmlTemplate = data.toString();
 
-	// Adjust CSS style-rule 'div.content' adding font-size and column count
-	htmlTemplate = htmlTemplate.replace(/(?:^|})*div.content\s*\{([^}]*)}/g,
-		'div.content {\n' +
-			'\t\t\tfont-size: ' + program.fontSize + ';\n' +
-			'\t\t\tfont-family: "PT Sans", sans-serif;\n' +
-			'\t\t\t-webkit-column-count: ' + program.column + ';\n' +
-			'\t\t\t-moz-column-count: ' + program.column + ';\n' +
-			'\t\t\tcolumn-count: ' + program.column + ';\n' +
-		'\t\t}');
+	// Custom div content CSS
+	var divContentCSS = 'div.content {\n' +
+	'\t\t\tfont-size: ' + program.fontSize + ';\n' +
+	'\t\t\tfont-family: "PT Sans", sans-serif;\n' +
+	'\t\t\t-webkit-column-count: ' + program.column + ';\n' +
+	'\t\t\t-moz-column-count: ' + program.column + ';\n' +
+	'\t\t\tcolumn-count: ' + program.column + ';\n' +
+	'\t\t}';
+
+	// Add definition for media print (page-break and margin)
+	var mediaPrintCSS = '\n' +
+		'\t\t@media print {\n';
+
+	// Set @page margin
+	mediaPrintCSS += '\t\t\t@page { margin: ' + program.margin + '; }\n';
+
+	var avoidPageBreak = _.isNil(program.avoidPageBreak) ? false : program.avoidPageBreak;
+
+	// Set page-break-inside for pre
+	if (avoidPageBreak) {
+		mediaPrintCSS += '\t\t\tpre { page-break-inside: avoid; }\n';
+	}
+	mediaPrintCSS += '\t\t}';
+
+	// Adjust CSS style-rules
+	htmlTemplate = htmlTemplate.replace(/(?:^|})*div.content\s*\{([^}]*)}/g, divContentCSS + mediaPrintCSS);
 
 	// Instantiate chordPro
 	var chordpro = new ChordPro();
