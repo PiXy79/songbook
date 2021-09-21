@@ -15,6 +15,14 @@ It currently support the following output formats:
 
 ![alt text](https://user-images.githubusercontent.com/25789363/32336538-d715615a-bfef-11e7-86d1-792bfc23ba30.png)
 
+## Apple silicon M1 issues
+
+To run correctly on Apple M1 type: 
+
+npm install --arch=x64
+
+It will use Rosetta and download the right version of Electron needed by html5-to-pdf library.
+
 ## Installation 
 
 Install globally using npm: 
